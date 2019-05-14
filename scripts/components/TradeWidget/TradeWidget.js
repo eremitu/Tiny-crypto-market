@@ -1,13 +1,21 @@
 export class TradeWidget {
-  constructor({ element }) {
-      this._el = element;
+  constructor({
+    element
+  }) {
+    this._el = element;
 
-      this._el.addEventListener('input', e => {
-        if (!e.target.closest('#amount')) return;
+    this._el.addEventListener('input', e => {
+      if (!e.target.closest('#amount')) return;
 
-        const value = +e.target.value;
-        this._updateDisplay(value);
-      })
+      const value = +e.target.value;
+      this._updateDisplay(value);
+    })
+    this._el.addEventListener('click', e => {
+      if (e.target === document.getElementById('closeModal')) {
+        this.close()
+      } 
+      else return;
+    })
   }
 
   trade(item) {
@@ -27,7 +35,7 @@ export class TradeWidget {
   }
 
   _render(item) {
-      this._el.innerHTML = `  
+    this._el.innerHTML = `  
       <div id="modal" class="modal open">
         <div class="modal-content">
           <h4>Buying ${item.name}:</h4>
@@ -47,7 +55,7 @@ export class TradeWidget {
 
           <div class="modal-footer">
             <a href="#!" class="modal-close waves-effect waves-teal btn-flat">Buy</a>
-            <a href="#!" class="modal-close waves-effect waves-teal btn-flat">Cancel</a>
+            <a id="closeModal" href="#!" class="modal-close waves-effect waves-teal btn-flat">Cancel</a>
           </div>
       </div>
       </div>
