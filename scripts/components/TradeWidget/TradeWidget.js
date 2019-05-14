@@ -1,9 +1,17 @@
+import {
+  Portfolio
+} from '../Portfolio/Portfolio.js';
+
 export class TradeWidget {
   constructor({
-    element
+    element,
+    balance,
+    portfolioWorth
   }) {
     this._el = element;
-
+    this._portfolioWorth = portfolioWorth;
+    this._balance = balance;
+    this._el = element;
     this._el.addEventListener('input', e => {
       if (!e.target.closest('#amount')) return;
 
@@ -11,11 +19,29 @@ export class TradeWidget {
       this._updateDisplay(value);
     })
     this._el.addEventListener('click', e => {
-      if (e.target === document.getElementById('closeModal')) {
+      if (e.target === document.getElementById('close-modal')) {
         this.close()
-      } 
-      else return;
+      } else return;
     })
+    this._el.addEventListener('click', e => {
+      if (e.target === document.getElementById('buy-modal')) {
+        this.onConfirm()
+      } else return;
+    })
+
+  }
+
+  onConfirm() {
+    let price = parseFloat(document.getElementById('item-total').innerText)
+    if (this._balance >= 0 && this._balance >= price) {
+      this._balance -= price
+      this._portfolioWorth += price
+      this._updatePortfolio()
+    } else if (this._balance < price) {
+      /*RENDER  ALERT*/
+      console.log('not enough funds to proceed')
+    }
+
   }
 
   trade(item) {
@@ -29,8 +55,16 @@ export class TradeWidget {
     this._el.querySelector('.modal').classList.remove('open')
   }
 
+  _updatePortfolio() {
+    this._portfolio = new Portfolio({
+      element: document.querySelector('[data-element="portfolio"]'),
+      balance: this._balance,
+      portfolioWorth: this._portfolioWorth,
+    });
+  }
+
   _updateDisplay(value) {
-    this._totalEl = this._totalEl || this._el.querySelector('#item-total')
+    this._totalEl = /*this._totalEl ||*/ this._el.querySelector('#item-total')
     this._totalEl.textContent = this._currentItem.price * value;
   }
 
@@ -54,8 +88,8 @@ export class TradeWidget {
           </div>
 
           <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-teal btn-flat">Buy</a>
-            <a id="closeModal" href="#!" class="modal-close waves-effect waves-teal btn-flat">Cancel</a>
+            <a id="buy-modal" href="#!" class="modal-close waves-effect waves-teal btn-flat">Buy</a>
+            <a id="close-modal" href="#!" class="modal-close waves-effect waves-teal btn-flat">Cancel</a>
           </div>
       </div>
       </div>

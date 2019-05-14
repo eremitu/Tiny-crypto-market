@@ -1,7 +1,7 @@
 export class Portfolio {
-  constructor({ element, balance }) {
+  constructor({ element, balance, portfolioWorth }) {
       this._el = element;
-      this._portfolioWorth = 0;
+      this._portfolioWorth = portfolioWorth;
       this._balance = balance;
       this._render();
   }
