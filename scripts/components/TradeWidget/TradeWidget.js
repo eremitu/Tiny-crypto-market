@@ -38,7 +38,7 @@ export class TradeWidget {
       this._portfolioWorth += price
       this._updatePortfolio()
     } else if (this._balance < price) {
-      /*RENDER  ALERT*/
+      M.toast({html: 'Not enough funds to proceed.', classes: 'red'})
       console.log('not enough funds to proceed')
     }
 
