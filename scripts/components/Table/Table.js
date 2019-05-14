@@ -14,7 +14,6 @@ export class Table {
   _onRowClick(e) {
     const target = e.target.closest('tr');
     if (!target) return;
-
     const id = target.dataset.id;
     this._onRowClickCallback(id);
   }

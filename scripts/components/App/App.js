@@ -18,9 +18,7 @@ export class App {
     this._initPortfolio();
     this._initTradeWidget();
 
-    
-    this._initTable(this._data);
-
+    this._initTable(this._data);  
   } 
   
   tradeItem(id) {
@@ -67,6 +65,7 @@ export class App {
               <div data-element="table" class="col s12"></div>
             </div>
             <div data-element="trade-widget"></div>
+            <div data-element="portfolio-addItem"></div>
         `;
     }
 }
