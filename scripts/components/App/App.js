@@ -9,8 +9,7 @@ export class App {
   constructor({ element }) {
     this._el = element;
     this._userBalance = 10000;
-    this._portfolioWorth = 0;
-
+     
     this._render();
 
     this._data = DataService.getCurrencies();
@@ -18,7 +17,9 @@ export class App {
     this._initPortfolio();
     this._initTradeWidget();
 
-    this._initTable(this._data);  
+    
+    this._initTable(this._data);
+
   } 
   
   tradeItem(id) {
@@ -30,15 +31,12 @@ export class App {
     this._portfolio = new Portfolio({
       element: this._el.querySelector('[data-element="portfolio"]'),
       balance: this._userBalance,
-      portfolioWorth: this._portfolioWorth,
     });
   }
 
   _initTradeWidget() {
     this._tradeWidget = new TradeWidget({
       element: this._el.querySelector('[data-element="trade-widget"]'),
-      balance: this._userBalance,
-      portfolioWorth: this._portfolioWorth,
     })
   }
 
@@ -65,7 +63,6 @@ export class App {
               <div data-element="table" class="col s12"></div>
             </div>
             <div data-element="trade-widget"></div>
-            <div data-element="portfolio-addItem"></div>
         `;
     }
 }
