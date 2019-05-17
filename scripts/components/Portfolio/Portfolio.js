@@ -2,53 +2,58 @@ import BaseComponent from '../BaseComponent/BaseComponent.js';
 
 
 export class Portfolio extends BaseComponent {
-  constructor({ element, balance }) {
-      super();
-      this._el = element;
-      this._portfolioWorth = 0;
-      this._balance = balance;
-      this._items = {};
+    constructor({
+        element,
+        balance
+    }) {
+        super();
+        this._el = element;
+        this._portfolioWorth = 0;
+        this._balance = balance;
+        this._items = {};
 
-      this.pushBalance();
+        this.pushBalance();
 
-      this._render();
-      
-  }
+        this._render();
 
-  addItem(item, amount) {
-    const currentItem = this._items[item.id] || {
-      name: item.name,
-      id: item.id,
-      amount: 0,
-      total: 0,
     }
 
+    addItem(item, amount) {
+        const currentItem = this._items[item.id] || {
+            name: item.name,
+            id: item.id,
+            amount: 0,
+            total: 0,
+        }
 
 
-    currentItem.price = item.price;
-    currentItem.amount = currentItem.amount + amount;
-    currentItem.total = currentItem.price * currentItem.amount;
-    this._items[item.id] = currentItem;
 
-    const purchasePrice = item.price * amount;
-    this._balance -= purchasePrice;
+        currentItem.price = item.price;
+        currentItem.amount = currentItem.amount + amount;
+        currentItem.total = currentItem.price * currentItem.amount;
+        this._items[item.id] = currentItem;
 
-    this._portfolioWorth = Object.values(this._items)
-      .reduce((total, item) => total + item.total, 0);
-    
-    this._render();
-  }
+        const purchasePrice = item.price * amount;
+        this._balance -= purchasePrice;
 
-  pushBalance() {
-    let pushBalance = new CustomEvent('pushBalance', {
-        detail: {newBalance : this._balance}
-    })
-    this._el.dispatchEvent(pushBalance);
-}
+        this._portfolioWorth = Object.values(this._items)
+            .reduce((total, item) => total + item.total, 0);
 
-  _render() {
-      const items = Object.values(this._items);
-      this._el.innerHTML = `
+        this._render();
+    }
+
+    pushBalance() {
+        let pushBalance = new CustomEvent('pushBalance', {
+            detail: {
+                newBalance: this._balance
+            }
+        })
+        this._el.dispatchEvent(pushBalance);
+    }
+
+    _render() {
+        const items = Object.values(this._items);
+        this._el.innerHTML = `
             <ul class="collapsible portfolio">
               <li>
                 <p class="collapsible-header">
@@ -89,7 +94,7 @@ export class Portfolio extends BaseComponent {
             </ul>
       `;
 
-      let elems = document.querySelectorAll('.collapsible');
-      M.Collapsible.init(elems);
-  }
+        let elems = document.querySelectorAll('.collapsible');
+        M.Collapsible.init(elems);
+    }
 }

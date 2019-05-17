@@ -13,6 +13,9 @@ html, body {
   top: 20px;
   right: 20px;
 }
+.data-table {
+    cursor: pointer;
+}
 
 .collapsible-body {
   background: white;

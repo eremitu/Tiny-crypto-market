@@ -1,13 +1,13 @@
 import BaseComponent from '../BaseComponent/BaseComponent.js';
 
 export class Table extends BaseComponent {
-  constructor({ data, element }) {
+  constructor({
+    data,
+    element
+  }) {
     super();
-    
     this._el = element;
-
     this._render(data);
-
     this._el.addEventListener('click', e => {
       this._onRowClick(e);
     })
@@ -15,66 +15,62 @@ export class Table extends BaseComponent {
 
     let tableGrid = document.getElementById('table-grid');
     this.tableGrid = tableGrid
-    tableGrid.addEventListener('dblclick', (e) =>  e.preventDefault())
+    tableGrid.addEventListener('dblclick', (e) => e.preventDefault())
     tableGrid.onclick = (e) => {
       e.preventDefault;
       if (e.target.tagName != 'TH') return;
 
-      this.sortGrid(e.target.cellIndex, e.target.getAttribute('data-type'));
+      this._sortGrid(e.target.cellIndex, e.target.getAttribute('data-type'));
     };
-    let asc = true; let desc = false;
-    this.asc = asc; this.desc = desc;
+    let asc = true;
+    let desc = false;
+    this.asc = asc;
+    this.desc = desc;
   }
 
 
-  sortGrid(colNum, type) {
+  _sortGrid(colNum, type) {
     let tbody = this.tableGrid.getElementsByTagName('tbody')[0];
     let rowsArray = [].slice.call(tbody.rows);
     let compare;
 
-    if(this.asc){ this.asc = false; this.desc = true;
-    switch (type) {
-      case 'number':
-        compare = (rowA, rowB) => {
-          return rowA.cells[colNum].innerHTML - rowB.cells[colNum].innerHTML;
-        };
-        break;
-      case 'string':
-        compare = (rowA, rowB) => {
-          return rowA.cells[colNum].innerHTML.localeCompare(rowB.cells[colNum].innerHTML);
-        };
-        break;
-    }}
-    else if (this.desc) { this.asc = true; this.desc = false;
-    switch (type) {
-      case 'number':
-        compare = (rowA, rowB) => {
-          return rowB.cells[colNum].innerHTML-rowA.cells[colNum].innerHTML
-        };
-        break;
-      case 'string':
-        compare = (rowA, rowB) => {
-          return rowB.cells[colNum].innerHTML.localeCompare(rowA.cells[colNum].innerHTML);
-        };
-        break;
-    }}
+    if (this.asc) {
+      this.asc = false;
+      this.desc = true;
+      switch (type) {
+        case 'number':
+          compare = (rowA, rowB) => {
+            return rowA.cells[colNum].innerHTML - rowB.cells[colNum].innerHTML;
+          };
+          break;
+        case 'string':
+          compare = (rowA, rowB) => {
+            return rowA.cells[colNum].innerHTML.localeCompare(rowB.cells[colNum].innerHTML);
+          };
+          break;
+      }
+    } else if (this.desc) {
+      this.asc = true;
+      this.desc = false;
+      switch (type) {
+        case 'number':
+          compare = (rowA, rowB) => {
+            return rowB.cells[colNum].innerHTML - rowA.cells[colNum].innerHTML
+          };
+          break;
+        case 'string':
+          compare = (rowA, rowB) => {
+            return rowB.cells[colNum].innerHTML.localeCompare(rowA.cells[colNum].innerHTML);
+          };
+          break;
+      }
+    }
     rowsArray.sort(compare);
     for (let i = 0; i < rowsArray.length; i++) {
       tbody.appendChild(rowsArray[i]);
     }
     this.tableGrid.appendChild(tbody);
   }
-
-
-
-
-
-
-
-
-
-
-
 
   _onRowClick(e) {
     const target = e.target.closest('tbody tr');
@@ -83,14 +79,16 @@ export class Table extends BaseComponent {
     const id = target.dataset.id;
     if (id) {
       let rowClickEvent = new CustomEvent('rowClick', {
-        detail: { id },
+        detail: {
+          id
+        },
       });
       this._el.dispatchEvent(rowClickEvent);
     }
   }
-    
-     _render(data) {
-        this._el.innerHTML = `
+
+  _render(data) {
+    this._el.innerHTML = `
         <table id="table-grid" class="data-table highlight"> 
           <thead>
             <tr>
@@ -114,5 +112,5 @@ export class Table extends BaseComponent {
           </tbody>
         </table>
         `;
-    }
+  }
 }

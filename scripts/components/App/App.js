@@ -1,15 +1,26 @@
-import { Table } from '../Table/Table.js';
-import { Portfolio } from '../Portfolio/Portfolio.js';
-import { TradeWidget } from '../TradeWidget/TradeWidget.js';
+import {
+  Table
+} from '../Table/Table.js';
+import {
+  Portfolio
+} from '../Portfolio/Portfolio.js';
+import {
+  TradeWidget
+} from '../TradeWidget/TradeWidget.js';
+import {
+  Filter
+} from '../Filter/Filter.js';
 
 
 import DataService from '../../services/DataService.js';
 
 export class App {
-  constructor({ element }) {
+  constructor({
+    element
+  }) {
     this._el = element;
     this._userBalance = 10000;
-     
+
     this._render();
 
     DataService.getCurrencies(data => {
@@ -18,16 +29,21 @@ export class App {
     });
 
     this._initPortfolio();
-    this._initTradeWidget(); 
-    
-    
+    this._initTradeWidget();
+    this._initFilter()
 
 
-  } 
-  
+  }
+
   tradeItem(id) {
     const coin = this._data.find(coin => coin.id === id);
     this._tradeWidget.trade(coin)
+  }
+
+  _initFilter() {
+    this._filter = new Filter({
+      element: this._el.querySelector('[data-element="filter"]'),
+    })
   }
 
   _initPortfolio() {
@@ -42,19 +58,19 @@ export class App {
       element: this._el.querySelector('[data-element="trade-widget"]'),
       balance: this._userBalance
     })
-
-    
-
     this._tradeWidget.on('buy', e => {
-      const { item, amount } = e.detail;
+      const {
+        item,
+        amount
+      } = e.detail;
       this._portfolio.addItem(item, amount);
       this._portfolio.pushBalance();
-      
+
     })
     this._portfolio.on('pushBalance', e => {
-       this._tradeWidget.pushBalance(e.detail.newBalance)
-     })
-    
+      this._tradeWidget.pushBalance(e.detail.newBalance)
+    })
+
   }
 
   _initTable(data) {
@@ -67,13 +83,14 @@ export class App {
       this.tradeItem(e.detail.id)
     })
   }
-    
-     _render() {
-        this._el.innerHTML = `
+
+  _render() {
+    this._el.innerHTML = `
             <div class="row">
                 <div class="col s12">
                     <h1>Tiny Crypto Market</h1>
                 </div>
+                <div data-element="filter"></div>
             </div>
             <div class="row portfolio-row">
                 <div class="col s6 offset-s6" data-element="portfolio"></div>
@@ -83,6 +100,7 @@ export class App {
               <div data-element="table" class="col s12"></div>
             </div>
             <div data-element="trade-widget"></div>
+            
         `;
-    }
+  }
 }

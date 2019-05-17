@@ -11,7 +11,6 @@ export class TradeWidget extends BaseComponent {
   }) {
     super();
     this._el = element;
-    //this._newBalance = balance;
     this.pushBalance(balance);
 
     this._el.addEventListener('input', e => {
@@ -30,13 +29,7 @@ export class TradeWidget extends BaseComponent {
 
 
         let totalPrice = +this._totalEl.textContent,
-            price = this._currentItem.price,
-            balance = this._newBalance;
-
-        console.log(price)
-        console.log(totalPrice)
-        console.log(balance)
-
+          balance = this._newBalance;
         if (balance >= 0 && balance >= totalPrice) {
           let buyEvent = new CustomEvent('buy', {
             detail: {
@@ -46,8 +39,7 @@ export class TradeWidget extends BaseComponent {
           });
           this._el.dispatchEvent(buyEvent);
           this.close();
-        }
-        else if (balance < totalPrice) {
+        } else if (balance < totalPrice) {
           M.toast({
             html: 'Not enough funds to proceed.',
             classes: 'red'
