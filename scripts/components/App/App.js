@@ -18,7 +18,11 @@ export class App {
     });
 
     this._initPortfolio();
-    this._initTradeWidget();    
+    this._initTradeWidget(); 
+    
+    
+
+
   } 
   
   tradeItem(id) {
@@ -36,12 +40,21 @@ export class App {
   _initTradeWidget() {
     this._tradeWidget = new TradeWidget({
       element: this._el.querySelector('[data-element="trade-widget"]'),
+      balance: this._userBalance
     })
+
+    
 
     this._tradeWidget.on('buy', e => {
       const { item, amount } = e.detail;
       this._portfolio.addItem(item, amount);
+      this._portfolio.pushBalance();
+      
     })
+    this._portfolio.on('pushBalance', e => {
+       this._tradeWidget.pushBalance(e.detail.newBalance)
+     })
+    
   }
 
   _initTable(data) {

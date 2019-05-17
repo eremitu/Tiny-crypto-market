@@ -1,10 +1,18 @@
-export class Portfolio {
+import BaseComponent from '../BaseComponent/BaseComponent.js';
+
+
+export class Portfolio extends BaseComponent {
   constructor({ element, balance }) {
+      super();
       this._el = element;
       this._portfolioWorth = 0;
       this._balance = balance;
       this._items = {};
+
+      this.pushBalance();
+
       this._render();
+      
   }
 
   addItem(item, amount) {
@@ -14,6 +22,8 @@ export class Portfolio {
       amount: 0,
       total: 0,
     }
+
+
 
     currentItem.price = item.price;
     currentItem.amount = currentItem.amount + amount;
@@ -28,6 +38,13 @@ export class Portfolio {
     
     this._render();
   }
+
+  pushBalance() {
+    let pushBalance = new CustomEvent('pushBalance', {
+        detail: {newBalance : this._balance}
+    })
+    this._el.dispatchEvent(pushBalance);
+}
 
   _render() {
       const items = Object.values(this._items);

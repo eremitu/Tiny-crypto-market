@@ -5,23 +5,39 @@ function isNumeric(n) {
 }
 
 export class TradeWidget extends BaseComponent {
-  constructor({ element }) {
-      super();
-      this._el = element;
+  constructor({
+    element,
+    balance
+  }) {
+    super();
+    this._el = element;
+    //this._newBalance = balance;
+    this.pushBalance(balance);
 
-      this._el.addEventListener('input', e => {
-        if (!e.target.closest('#amount')) return;
+    this._el.addEventListener('input', e => {
+      if (!e.target.closest('#amount')) return;
 
-        const value = +e.target.value;
-        this._updateDisplay(value);
-      })
+      const value = +e.target.value;
+      this._updateDisplay(value);
+    })
 
-      this._el.addEventListener('click', e => {
-        if (e.target.closest('[data-id="cancel"]')) {
-          this.close();
-        }
+    this._el.addEventListener('click', e => {
+      if (e.target.closest('[data-id="cancel"]')) {
+        this.close();
+      }
 
-        if (e.target.closest('[data-id="buy"]')) {
+      if (e.target.closest('[data-id="buy"]')) {
+
+
+        let totalPrice = +this._totalEl.textContent,
+            price = this._currentItem.price,
+            balance = this._newBalance;
+
+        console.log(price)
+        console.log(totalPrice)
+        console.log(balance)
+
+        if (balance >= 0 && balance >= totalPrice) {
           let buyEvent = new CustomEvent('buy', {
             detail: {
               amount: +this._el.querySelector('#amount').value,
@@ -31,24 +47,38 @@ export class TradeWidget extends BaseComponent {
           this._el.dispatchEvent(buyEvent);
           this.close();
         }
-      })
-
-      this._el.addEventListener('keydown', e => {
-        if (!e.target.closest('#amount')) return;
-
-        const { key } = e;
-        if (!isNumeric(key) && key !== 'Backspace') {
-          e.preventDefault();
+        else if (balance < totalPrice) {
+          M.toast({
+            html: 'Not enough funds to proceed.',
+            classes: 'red'
+          })
         }
-      })
+      }
+    })
+
+    this._el.addEventListener('keydown', e => {
+      if (!e.target.closest('#amount')) return;
+
+      const {
+        key
+      } = e;
+      if (!isNumeric(key) && key !== 'Backspace') {
+        e.preventDefault();
+      }
+    })
   }
 
   trade(item) {
     this._currentItem = item;
     this._total = 0;
-
     this._render(item);
   }
+
+
+  pushBalance(newBalance) {
+    this._newBalance = newBalance
+  }
+
 
   close() {
     this._el.querySelector('.modal').classList.remove('open')
@@ -60,7 +90,7 @@ export class TradeWidget extends BaseComponent {
   }
 
   _render(item) {
-      this._el.innerHTML = `  
+    this._el.innerHTML = `  
       <div id="modal" class="modal open">
         <div class="modal-content">
           <h4>Buying ${item.name}:</h4>
