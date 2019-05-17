@@ -52,8 +52,8 @@ export class Portfolio extends BaseComponent {
             <ul class="collapsible portfolio">
               <li>
                 <p class="collapsible-header">
-                    Current balance: ${this._balance}.
-                    Portfolio Worth: ${this._portfolioWorth}
+                    Current balance: ${this._balance.toFixed(2)}
+                    Portfolio Worth: ${this._portfolioWorth.toFixed(2)}
                 </p>
                 <div class="collapsible-body">
                 ${
@@ -75,8 +75,8 @@ export class Portfolio extends BaseComponent {
                             <tr data-id="${item.id}">
                                 <td>${item.name}</td>
                                 <td>${item.amount}</td>
-                                <td>${item.price}</td>
-                                <td>${item.total}</td>
+                                <td>${item.price.toFixed(2)}</td>
+                                <td>${item.total.toFixed(2)}</td>
                             </tr>
                           `).join('')}
                       </tbody>
