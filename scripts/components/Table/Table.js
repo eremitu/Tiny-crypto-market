@@ -8,6 +8,7 @@ export class Table extends BaseComponent {
     super();
     this._el = element;
     this._render(data);
+  
     this._el.addEventListener('click', e => {
       this._onRowClick(e);
     })

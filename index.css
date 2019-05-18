@@ -28,6 +28,15 @@ p.collapsible-header {
     width: 100%;
 }
 
+.filter {
+    position: relative;
+    width: 20%;
+    margin: 0%;
+    margin-left: -3.5%;
+    top: 10%
+    
+}
+
 tr td {
     cursor: pointer;
 }

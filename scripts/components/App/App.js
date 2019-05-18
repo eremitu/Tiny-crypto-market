@@ -20,7 +20,7 @@ export class App {
   }) {
     this._el = element;
     this._userBalance = 10000;
-
+    
     this._render();
 
     DataService.getCurrencies(data => {
@@ -32,6 +32,9 @@ export class App {
     this._initTradeWidget();
     this._initFilter()
 
+    
+
+    
 
   }
 
@@ -40,11 +43,7 @@ export class App {
     this._tradeWidget.trade(coin)
   }
 
-  _initFilter() {
-    this._filter = new Filter({
-      element: this._el.querySelector('[data-element="filter"]'),
-    })
-  }
+
 
   _initPortfolio() {
     this._portfolio = new Portfolio({
@@ -84,18 +83,24 @@ export class App {
     })
   }
 
+  _initFilter() {
+    this._filter = new Filter({
+      element: this._el.querySelector('[data-element="filter"]'),
+    })
+  }
+
   _render() {
     this._el.innerHTML = `
             <div class="row">
                 <div class="col s12">
                     <h1>Tiny Crypto Market</h1>
                 </div>
-                <div data-element="filter"></div>
+                
             </div>
             <div class="row portfolio-row">
                 <div class="col s6 offset-s6" data-element="portfolio"></div>
             </div>
-
+            <div data-element="filter"></div>
             <div class="row">
               <div data-element="table" class="col s12"></div>
             </div>
