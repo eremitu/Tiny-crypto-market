@@ -1,33 +1,88 @@
-export class TradeWidget {
-  constructor({ element }) {
-      this._el = element;
+import BaseComponent from '../BaseComponent/BaseComponent.js';
 
-      this._el.addEventListener('input', e => {
-        if (!e.target.closest('#amount')) return;
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
 
-        const value = +e.target.value;
-        this._updateDisplay(value);
-      })
+export class TradeWidget extends BaseComponent {
+  constructor({
+    element,
+    balance
+  }) {
+    super();
+    this._el = element;
+    this.pushBalance(balance);
+
+    this._el.addEventListener('input', e => {
+      if (!e.target.closest('#amount')) return;
+
+      const value = +e.target.value;
+      this._updateDisplay(value);
+    })
+
+    this._el.addEventListener('click', e => {
+      if (e.target.closest('[data-id="cancel"]')) {
+        this.close();
+      }
+
+      if (e.target.closest('[data-id="buy"]')) {
+
+
+        let totalPrice = +this._totalEl.textContent,
+          balance = this._newBalance;
+        if (balance >= 0 && balance >= totalPrice) {
+          let buyEvent = new CustomEvent('buy', {
+            detail: {
+              amount: +this._el.querySelector('#amount').value,
+              item: this._currentItem,
+            }
+          });
+          this._el.dispatchEvent(buyEvent);
+          this.close();
+        } else if (balance < totalPrice) {
+          M.toast({
+            html: 'Not enough funds to proceed.',
+            classes: 'red'
+          })
+        }
+      }
+    })
+
+    this._el.addEventListener('keydown', e => {
+      if (!e.target.closest('#amount')) return;
+
+      const {
+        key
+      } = e;
+      if (!isNumeric(key) && key !== 'Backspace') {
+        e.preventDefault();
+      }
+    })
   }
 
   trade(item) {
     this._currentItem = item;
     this._total = 0;
-
     this._render(item);
   }
+
+
+  pushBalance(newBalance) {
+    this._newBalance = newBalance
+  }
+
 
   close() {
     this._el.querySelector('.modal').classList.remove('open')
   }
 
   _updateDisplay(value) {
-    this._totalEl = this._totalEl || this._el.querySelector('#item-total')
+    this._totalEl = this._el.querySelector('#item-total')
     this._totalEl.textContent = this._currentItem.price * value;
   }
 
   _render(item) {
-      this._el.innerHTML = `  
+    this._el.innerHTML = `  
       <div id="modal" class="modal open">
         <div class="modal-content">
           <h4>Buying ${item.name}:</h4>
@@ -46,8 +101,8 @@ export class TradeWidget {
           </div>
 
           <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-teal btn-flat">Buy</a>
-            <a href="#!" class="modal-close waves-effect waves-teal btn-flat">Cancel</a>
+            <a href="#!" data-id="buy" class="modal-close waves-effect waves-teal btn-flat">Buy</a>
+            <a href="#!" data-id="cancel" class="modal-close waves-effect waves-teal btn-flat">Cancel</a>
           </div>
       </div>
       </div>
