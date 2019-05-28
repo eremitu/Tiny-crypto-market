@@ -22,11 +22,11 @@ export class App {
     this._userBalance = 10000;
     
     this._render();
-
-    DataService.getCurrencies(data => {
+    this.fetchData();
+    /*DataService.getCurrencies(data => {
       this._data = data;
       this._initTable(this._data);
-    });
+    });*/
 
     this._initPortfolio();
     this._initTradeWidget();
@@ -36,6 +36,21 @@ export class App {
 
     
 
+  }
+
+  async fetchData() {
+    // DataService.getCurrencies().then(data => {
+    //   this._data = data;
+    //   return this._initTable(this._data);
+    // })
+    
+    try {
+      let data = await DataService.getCurrencies()
+      this._data = data;
+      this._initTable(this._data);
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   tradeItem(id) {
